@@ -31,4 +31,29 @@ However, there is a chance that errors in one gate will not propagate all the wa
 \item \textbf{Logical Masking:} The error does not pass through a multi-input logic gate because the value of the other input(s) fix(es) the output of the gate.
 \end{itemize}
 \end{frame}
+\begin{frame}{Reliability Analysis \small Principles}
+As it happens, Logical Masking is the most prominent masking type in logical circuits. It is therefore useful to be able to analyse circuits on their ability to logically mask errors.
+\vspace{0.25cm}
+
+If we define the \emph{probability} of a signal as the proportion of time that it is logically True, then the basic idea is as follows:
+\begin{itemize}
+\item Construct a faulty representation of the circuit, which takes into account probabilities of each gate failing.
+\item Derive the probabilities of the output signals.% in terms of the input probabilities and gate error probabilities for both the ideal and faulty circuits.
+\item Then the \emph{reliability} of an output signal is the probability that it takes the same value in both the ideal and faulty circuits.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Reliability Analysis \small Probabilistic Gate Models}
+However, existing algorithms are inefficient!
+\vspace{0.25cm}
+
+For example, \emph{Probabilistic Gate Models} (PGMs) attempt to analytically derive the output probabilities as functions of the input probabilities and gate error probabilities. 
+\vspace{0.25cm}
+
+The problem occurs when the inputs to a gate are not statistically independent, such as is the case when there are \emph{reconvergent fanouts}. That is, when two or more inputs to a gate originated from a single signal.
+\vspace{0.25cm}
+
+The PGM equations do not account for statistically dependent signals, and the solution involves splitting the circuit into two sub-circuits. This approximately doubles the cost of the algorithm for each reconvergent fanout.
+
+\end{frame}
 \end{document}
