@@ -54,6 +54,25 @@ The problem occurs when the inputs to a gate are not statistically independent, 
 \vspace{0.25cm}
 
 The PGM equations do not account for statistically dependent signals, and the solution involves splitting the circuit into two sub-circuits. This approximately doubles the cost of the algorithm for each reconvergent fanout.
+\end{frame}
 
+\begin{frame}{Reliability Analysis \small Stochastic Logic with Bernoulli Sequences}
+The use of \emph{Stochastic Logic} can avoid these issues. With this approach, the input probabilities are used to generate input bitstreams, which are then propagated through the circuit. The output probabilities can then be accurately calculated from the output bitstreams.
+\vspace{0.25cm}
+
+Existing algorithms use the input probabilities to generate \emph{Bernoulli Sequences}, where each element is a Bernoulli distributed random variable, the parameter for which is the input probability.
+\vspace{0.25cm}
+
+However, this approach incurs a large computational overhead, as a random number must be generated for each element, for each input. This can be significant for large circuits, because the input sequences must be large to obtain accurate results.
+\end{frame}
+
+\begin{frame}{Reliability Analysis \small Stochastic Logic with Non-Bernoulli Sequences}
+To reduce the random number generation overhead, \emph{Non-Bernoulli Sequences} can be used.
+\vspace{0.25cm}
+
+These sequences are generated deterministically with the expected number of 1s, and then randomly permuted.
+\vspace{0.25cm}
+
+This means only one random number generation is required per input bitstream.
 \end{frame}
 \end{document}
