@@ -1,0 +1,34 @@
+\documentclass[12pt]{beamer}
+
+\author{Jake Humphrey}
+\title{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation}
+\subtitle{A Python Implementation}
+\institute{Department of Electronic and Electrical Engineering\\
+  Imperial College London\\
+  \texttt{jbh111@ic.ac.uk}
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Reliability of Circuits}
+Gates in a logic circuit are, alas, not perfect. They are susceptible to error, of which there are three main types:
+\begin{itemize}
+\item \textbf{Stuck-At-One Error:} The output of the gate goes high, regardless of the expected output.
+\item \textbf{Stuck-At-Zero Error:} The output of the gate goes low, regardless of the expected output.
+\item \textbf{Von Neumann Error:} The output of the gate becomes the inverse of the expected output.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Masking Effects}
+However, there is a chance that errors in one gate will not propagate all the way to an output. This could be due to one of the following \emph{masking effect}s
+\begin{itemize}
+\item \textbf{Electrical Masking:} The error does not have a large enough effect on the amplitude of the logic signal to be detected at an input.
+\item \textbf{Temporal Masking:} The error is input to a latch but occurs at some point in time outside of the latch's detection window.
+\item \textbf{Logical Masking:} The error does not pass through a multi-input logic gate because the value of the other input(s) fix(es) the output of the gate.
+\end{itemize}
+\end{frame}
+\end{document}
