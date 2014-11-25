@@ -1,0 +1,41 @@
+Portes dans un circuit logique sont, hélas, pas parfait. Ils sont sensibles aux erreurs, dont il existe trois types principaux:
+L'erreur Coincé-A-Un, où la sortie de la porte passe au niveau haut, quel que soit le résultat attendu.
+L'erreur Coincé-A-Zero, où la sortie de la porte passe au niveau bas, quel que soit le résultat attendu.
+L'erreur de Von Neumann, où la sortie de la porte devient l'inverse de la sortie attendue.
+
+Cependant, il y a une chance que les erreurs dans une porte ne se propagent pas jusqu'à une sortie. Cela pourrait être dû à l'un des effets de masquage suivants
+Masquage électrique: L'erreur n'a pas un effet suffisament grand sur l'amplitude du signal logique devant être détecté sur une entrée.
+Masquage temporel: L'erreur est entrée à un latch, mais se produit à un moment à l'extérieur de la fenêtre de détection de le latch.
+Masquage logique: L'erreur ne passe pas par une porte logique à entrées multiples parce que les valeurs aux autres entrées fixent la sortie de la porte.
+
+Comme il arrive, masquage logique est le type de masquage le plus important dans les circuits logiques. Il est donc utile de pouvoir analyser les circuits de leur capacité à masquer les erreurs logiquement.
+Si on définit la probabilité d'un signal que la proportion du temps qu'il est logiquement vrai, l'idée de base est la suivante:
+Construire une représentation défectueux du circuit, qui prend en compte les probabilités d'erreur de chaque porte.
+Dériver les probabilités des signaux de sortie en fonction des probabilités d'entrée et les probabilités d'erreur des portes pour les deux circuits idéales et défectueux.
+Ensuite, la fiabilité d'un signal de sortie est la probabilité qu'il prend la même valeur dans les deux circuits idéaux et défectueux.
+
+Cependant, les algorithmes existants sont inefficaces!
+Par exemple, les Modèles de Portes Probabilistes (En Anglais Probabilistic Gate Models, PGMs) tenter de dériver analytiquement les probabilités de sortie comme des fonctions des probabilités d'entrée et les probabilités d'erreur des portes.
+Le problème se produit lorsque les entrées à une porte ne sont pas statistiquement indépendant, comme c'est le cas quand il y a fanouts reconvergent. Autrement dit, lorsque deux ou plusieurs entrées à une porte est issue d'un seul signal.
+Les équations PGM ne tiennent pas compte des signaux statistiquement dépendantes, et la solution exige que le circuit soit divisé en deux sous-circuits. C'est environ double du coût de l'algorithme pour chaque fanout reconvergent.
+
+L'utilisation de Calcul Stochastique peut éviter ces problèmes. Avec cette approche, les probabilités d'entrée sont utilisés pour générer des trains de bits d'entrée, qui sont ensuite propagées dans le circuit. Les probabilités de sortie peuvent ensuite être calculés avec précision à partir des flux de bits de sortie.
+
+Algorithmes existants du Calcul Stochastique utilisent les probabilités d'entrée pour générer des séquences de Bernoulli, où chaque élément est une variable aléatoire de la distribution Bernoulli, le paramètre pour lequel est la probabilité d'entrée.
+Cependant, cette approche encourt une grande charge de calcul, comme n nombres aléatoires doivent être générés pour chaque entrée. Cela peut être important pour les grands circuits, parce que n doit être grande pour obtenir des résultats précis.
+
+Pour réduire la surcharge de génération de nombres aléatoires, les suites non-Bernoulli peuvent être utilisées.
+Ces séquences sont générées de façon déterministe avec l'espérance de 1s, puis permutées au hasard.
+Cela signifie que seulement une nombre aléatoire est requise par flux binaire d'entrée.
+
+L'information sur les diapositives précédentes mène à un algorithme d'analyse de fiabilité par l'aide de calcul stochastique avec les suites non-Bernoulli.
+J'ai écrit une implémentation Python de cet algorithme, que je vais décrire dans les diapositives suivantes.
+
+La section la plus coûteuse est la double boucle finale!
+On doit propager un signal à travers chaque circuit une fois pour chaque sortie, et n fois.
+La propagation pourrait être, au pire, O(nombre de portes dans le circuit), si le signal doit se propager à travers chaque porte.
+Soit o le nombre de sorties du circuit, n la longueur des séquences non-Bernoulli, et g le nombre de portes dans le circuit, nous avons que la complexité de l'algorithme est O(ogn)
+
+Cet algorithme a encore place à l'amélioration. Si les valuers sont propagees une fois par sortie pour le même vecteur d'entrée, il doit recalculer de nombreuses valeurs intermédiaires redondantes.
+
+Une amélioration serait de calculer toutes les valeurs dans le circuit une seule fois, réduisant ainsi la double boucle à un seul sur la longueur des séquences d'entrée.
