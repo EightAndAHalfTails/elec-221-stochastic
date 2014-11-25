@@ -1,3 +1,5 @@
+#!/bin/env python2
+
 import random
 import timeit
 from collections import defaultdict
@@ -135,11 +137,13 @@ def findReliabilities(filename):
       faulty_output = evaluate(output_node, faulty, inputvec)
       outputs_same[output_node].append(ideal_output == faulty_output)
   for n, v in outputs_same.iteritems():
-    pass
-    #print "reliability of {} is {}".format(n, 1.0*v.count(True)/ITER)
+    print "reliability of {} is {}".format(n, 1.0*v.count(True)/ITER)
   # Complexity = O(ITER * len(circuit.outputs) * len(circuit.gates))
 
-reps = 1
-#time = timeit.timeit('findReliabilities("C:\Users\Eight_000\Desktop\c17.v")', setup = "from __main__ import findReliabilities", number = reps)/reps
-time = timeit.timeit('findReliabilities("C:\Users\Eight_000\Desktop\c432.v")', setup = "from __main__ import findReliabilities", number = reps)/reps
-print time
+#reps = 1
+#time = timeit.timeit('findReliabilities("./c17.v")', setup = "from __main__ import findReliabilities", number = reps)/reps
+#time = timeit.timeit('findReliabilities("./c432.v")', setup = "from __main__ import findReliabilities", number = reps)/reps
+#print time
+
+findReliabilities("./c17.v")
+findReliabilities("./c432.v")
