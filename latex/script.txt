@@ -42,34 +42,3 @@ This algorithm still has room for improvement. If \verb|propagate| is called onc
 
 An improved \verb|propagate| would calculate all the output values in one go, thus reducing the double loop to a single one over the length of the input sequences.
 \vspace{0.25cm}
-
-This would reduce the algorithm complexity to $O(gn)$
-\end{frame}
-
-\begin{frame}{Reliability Analysis Algorithm \small Runtime Analysis}
-\center
-\only<1>{
-\begin{tabular}{l|r r}
-	Input Files & c17.v& c432.v\\
-  \hline
-  Inputs & 5 & 36\\
-  Outputs & 2 & 7\\
-  Gates & 6 & 160\\
-  \hline
-  Input Sequence Length & runtime /s & runtime /s\\
-  \hline
-  1 & 0.00023 & 1.34\\
-  10 & 0.00067 & 12.2\\
-  100 & 0.00485 & 122\\
-  1 000 & 0.0473 & 1250\\
-  10 000 & 0.458 & No Data\\
-  100 000 & 4.66 & No Data
-\end{tabular}}
-\only<2>{
-\begin{figure}
-  \centering
-    \includegraphics[width=\textwidth]{runtime}
-\end{figure}
-}
-\end{frame}
-\end{document}
