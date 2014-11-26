@@ -3,7 +3,7 @@
 import random
 import timeit
 from collections import defaultdict
-ITER = 1000
+ITER = 10000
 
 class Circuit:
   def __init__(self, i=[], o=[], g=dict()):
@@ -118,7 +118,7 @@ def exhaust(circuit):
 def getNonBernoulliSequences(circuit):
   inputval = dict()
   for input_node in circuit.inputs:
-    prob = 0.5 #float(raw_input("Enter probability of {}: ".format(input_node)))
+    prob = float(raw_input("Enter probability of {}: ".format(input_node)))
     num_ones = int(prob*ITER)
     non_ber = [True]*num_ones + [False]*(ITER-num_ones)
     random.shuffle(non_ber)
@@ -146,4 +146,4 @@ def findReliabilities(filename):
 #print time
 
 findReliabilities("./c17.v")
-findReliabilities("./c432.v")
+#findReliabilities("./c432.v")
