@@ -1,0 +1,78 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm2e}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{appendix}
+
+\title{Une Approche de Calcul Stochastique pour l'Evaluation de Fiabilité Précis et Efficace: Une Implementation Python}
+\author{Jake Humphrey\\
+	Department of Electronic and Electrical Engineering\\
+  Imperial College London\\
+  \texttt{jbh111@ic.ac.uk} }
+  
+  
+\begin{document}
+
+\maketitle
+
+\section{Abstract}\label{sec:abstract}
+
+Cet article détaille mon travail relatif à l'approche de l'évaluation de la fiabilité détaillé par J.Han et al dans leur document \emph{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation}\cite{han12}
+
+Versions de ce travail sont disponibles en français et en anglais à ma page Github \url{github.com/EightAndAHalfTails/elec-221-stochastic}
+
+\section{Le Papier en Question}
+Dans cette section, je discuterai des détails relatifs au papier en cours de discussion.
+
+\subsection{Résumé}
+J.Han et al enquêter sur les méthodes d'évaluation de fiabilité existants, tels que l'approche de la modèle de la porte probabiliste, qui tente de tirer analytiquement la fiabilité d'un circuit. Ils découvrent que cette approche est difficile, voire impossible pour les grands circuits, car les corrélations entre les signaux et les nœuds dans le circuit augmentent de façon exponentielle la complexité.
+
+Ils passent ensuite à examiner les algorithmes existants non déterministes fondés sur la simulation, comme la simulation Monte Carlo, ou méthodes dérivées du calcul stochastique. Bien que ceux-ci traitent intrinsèquement des signaux corrélés, ils nécessitent toujours une grande surcharge de calcul pour la génération des nombres pseudo-aléatoires.
+
+Dans le papier, J.Han et al proposer leur propre méthode dérivée du calcul stochastique qui nécessite beaucoup moins de nombres pseudo-aléatoires à générer. Ils y parviennent en générant des flux binaires d'entrée déterministe puis les permutant au hasard.
+
+\section{Mon Travail}
+Dans cette section, je discuterai des détails du mini-projet que j'ai fait en concernant le document de sujet.
+
+\subsection{Résumé}
+J'ai décidé de mettre en œuvre la solution décrite dans le papier, d'écrire un programme qui tiendrait dans une liste d'interconnexions de circuit (en Verilog HDL), et les probabilités pour les entrées et les erreurs des portes, et imprimer la fiabilité de chaque sortie.
+
+J'ai pensé à l'écrire en C ++ et/ou Verilog/VHDL, mais a décidé sur Python pour la facilité de l'écriture. C'est aussi une preuve de concept, et non un programme particulièrement  solide ou efficace.
+
+\subsection{l'Algorithme Proposé}
+Algorithme~\ref{pseud} décrit mon algorithme proposé. La double boucle finale est inefficace en ce que l'évaluation des sorties vers l'arrière à travers le circuit pour chaque sortie consiste à calculer de nombreuses valeurs intermédiaires redondante. Une méthode préférable basée sur la simulation serait de suivre les entrées vers l'avant pour les sorties, ce qui serait seulement $O(\#portes \times \#vecteurs d'entr\acute{e}e)$ as opposed to $O(\#portes \times \#vecteurs d'entr\acute{e} \times \#sorties)$. Cependant, j'ai choisi cette méthode pour simplifier la fonction d'évaluation.
+
+\begin{algorithm}[hp]
+\caption{Mon pseudocode mise en œuvre de la solution proposée}
+\label{pseud}
+\KwData{circuit logique à tester}
+\KwResult{fiabilités pour chaque sortie}
+\For{chaque porte dans le circuit}{représenter porte dans le circuit défectueux\;}
+\For{chaque entrée du circuit défectueux}{générer une suite non-Bernoulli\;}
+\For{chaque sortie dans le circuit}{
+\For{chaque vecteur d'entrée}{
+\If{les sorties sont les mêmes pour chaque circuit}{ajouter 1/n à la fiabilité de sortie \;}
+}
+}
+\end{algorithm}
+
+\subsection{Détails de travail}
+Le code Python a été inclus ici à l'Annexe~\ref{app:code}. Il peut également être trouvé à ma page Github, l'URL pour laquelle a été donnée dans la section~\ref{sec:abstract}, avec présentation de diapositives et un script tous les deux en anglais et en français.
+\section{Appendices}
+\begin{appendices}
+\section{Python Code}
+\label{app:code}
+\inputminted[]{python}{../stochastic.py}
+\end{appendices}
+\begin{thebibliography}{9}
+
+\bibitem{han12}
+  J. Han, H. Chen, J. Liang, P. Zhu, Z. Yang, and F. Lombardi,
+  \emph{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation},
+  2012.
+
+\end{thebibliography}
+
+\end{document}

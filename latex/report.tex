@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage{algorithm2e}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{appendix}
+
+\title{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation: A Python Implementation}
+\author{Jake Humphrey\\
+	Department of Electronic and Electrical Engineering\\
+  Imperial College London\\
+  \texttt{jbh111@ic.ac.uk} }
+  
+  
+\begin{document}
+
+\maketitle
+
+\section{Abstract}\label{sec:abstract}
+
+This paper details my work relating to the reliability evaluation approach detailed by J.Han et al in their paper \emph{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation}\cite{han12}
+
+Versions of this work are available in both French and English at my Github page \url{github.com/EightAndAHalfTails/elec-221-stochastic}
+
+\section{The Subject Paper}
+In this section I will discuss details relating to the paper under discussion.
+
+\subsection{Summary}
+J.Han et al investigate existing reliability evaluation methods, such as the Probabilistic Gate Model approach, which attempts to analytically derive the reliability of a circuit. They discover that this approach is difficult or impossible for large circuits, as correlations between signals and nodes in the circuit exponentially increase the complexity.
+
+They then move on to examining existing non-deterministic simulation-based algorithms, such as Monte Carlo Simulation, or methods derived from Stochastic Computing. While these intrinsically handle correlated signals, they still require a large computation overhead for the generation of pseudorandom numbers.
+
+In the paper, J.Han et al propose their own method derived from Stochastic Computing which requires far fewer pseudorandom numbers to be generated. They achieve this by generating input bitstreams deterministically and then randomly permuting them.
+
+\section{My Work}
+In this section I will discuss details of the mini-project I did relating to the subject paper.
+
+\subsection{Summary}
+I decided to implement the solution described in the paper, to write a program that would take in a circuit netlist (in Verilog HDL), and probabilities for inputs and gate errors, and print out the reliability of each output.
+
+I considered writing this in C++ and/or Verilog/VHDL, but decided on Python for ease of writing. This is also a proof of concept, and not a robust or efficient program.
+
+\subsection{The Proposed Algorithm}
+Algorithm~\ref{pseud} describes my proposed algorithm. The final double loop is inefficient in that evaluating the outputs backwards through the circuit for each output entails calculating many intermediate values redundantly. A better simulation-based method would be to trace the inputs forwards to the outputs, which would be only $O(\#gates \times \#inputvectors)$ as opposed to $O(\#gates \times \#inputvectors \times \#outputs)$. However, I chose this method to simplify the evaluation function.
+
+\begin{algorithm}[hp]
+\caption{My pseudocode implementing the proposed solution}
+\label{pseud}
+\KwData{Logic circuit to be tested, input and gate eror probabilities}
+\KwResult{Reliabilities for each output}
+\For{each gate in the circuit}{represent gate in faulty circuit\;}
+\For{each input to the faulty circuit}{generate a non-Bernoulli sequence\;}
+\For{each output in the circuit}{
+	\For{each input vector}{
+		\If{outputs are the same for each circuit}{add 1/n to reliability of that output\;}
+	}
+}
+\end{algorithm}
+
+\subsection{Work Details}
+The Python code has been included here in Appendix~\ref{app:code}. It can also be found at my Github page, the url for which was given in Section~\ref{sec:abstract}, along with presentation slides and a script in both English and French.
+\section{Appendices}
+\begin{appendices}
+\section{Python Code}
+\label{app:code}
+\inputminted[]{python}{../stochastic.py}
+\end{appendices}
+\begin{thebibliography}{9}
+
+\bibitem{han12}
+  J. Han, H. Chen, J. Liang, P. Zhu, Z. Yang, and F. Lombardi,
+  \emph{A Stochastic Computational Approach for Accurate and Efficient Reliability Evaluation},
+  2012.
+
+\end{thebibliography}
+
+\end{document}

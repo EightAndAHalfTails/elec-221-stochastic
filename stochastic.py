@@ -26,6 +26,8 @@ class Gate:
     print "name: {}, op: {}, {} -> {}".format(self.name, self.operation, self.inputs, self.output)
 
 def parse(filename):
+  """reads in a verilog file and returns a Circuit instance containing
+     the circuit descibed by the file"""
   gates = dict()
   with open(filename) as f:
     for l in f.readlines():
@@ -48,7 +50,6 @@ def parse(filename):
       elif command == "wire":
         pass
       elif command in ["nand", "and", "or", "nor", "xor", "xnor", "not"]:
-        #print l
         connections = l.split('(')[1].replace(" ", "").replace(");", "").split(',')
         out = connections[0]
         ins = connections[1:]
@@ -60,6 +61,8 @@ def parse(filename):
   return Circuit(inputs, outputs, gates)
 
 def evaluate(node, circuit, inputval):
+"""Given a Cicuit instance and input vector, this function
+derives the value at a given node in the circuit"""
   if node in circuit.inputs:
     return inputval[node]
   #circuit.printout()
@@ -87,7 +90,9 @@ def evaluate(node, circuit, inputval):
     print "Error at gate", gate.name
     return False
 
-def getVNFaulty(circuit): #appends each gate in the circuit with an xor gate
+def getVNFaulty(circuit):
+"""Given a circuit instance, this function creates a new Circuit instance, representing
+the original with each gate in the circuit appended with an xor gate"""
   faulty_gates = dict()
   error_ins = []
   for ideal_gate in circuit.gates.values():
@@ -108,6 +113,7 @@ def getVNFaulty(circuit): #appends each gate in the circuit with an xor gate
   return faulty_circuit
 
 def exhaust(circuit):
+"""This function exhaustively tries all inputs to a circuit and prints the corresponding outputs. For testing purposes only"""
   inputval = dict()
   for iteration in range(2**len(circuit.inputs)):
     input_vector = [(iteration>>i)&1 for i in xrange(len(circuit.inputs)-1,-1,-1)]
@@ -116,6 +122,7 @@ def exhaust(circuit):
     print input_vector, [evaluate(n, circuit, inputval) for n in circuit.outputs]
 
 def getNonBernoulliSequences(circuit):
+"""This fuction, given a circuit, returns a dictionary instance mapping input node names to lists of values"""
   inputval = dict()
   for input_node in circuit.inputs:
     prob = float(raw_input("Enter probability of {}: ".format(input_node)))
@@ -126,16 +133,32 @@ def getNonBernoulliSequences(circuit):
   return inputval
 
 def findReliabilities(filename):
+  # create circuit from file
   ideal = parse(filename)
+
+  # create error-prone version of the circuit
   faulty = getVNFaulty(ideal)
+
+  # create input sequences for all inputs (including gate errors)
   inputval = getNonBernoulliSequences(faulty)
+
   outputs_same = defaultdict(list)
+
+  # for each interation
   for i in range(ITER):
+    # get the ith element of each input bitstream
     inputvec = {x:inputval[x][i] for x in inputval.keys()}
+
+    # or each output
     for output_node in ideal.outputs:
+      # find the value of the output in each circuit
       ideal_output = evaluate(output_node, ideal, inputvec)
       faulty_output = evaluate(output_node, faulty, inputvec)
+
+      # success if they are the same
       outputs_same[output_node].append(ideal_output == faulty_output)
+      
+  #print reliability of that output
   for n, v in outputs_same.iteritems():
     print "reliability of {} is {}".format(n, 1.0*v.count(True)/ITER)
   # Complexity = O(ITER * len(circuit.outputs) * len(circuit.gates))
